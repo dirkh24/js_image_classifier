@@ -11,6 +11,9 @@ async function app() {
   const imgEl = document.getElementById('img');
   const result = await net.classify(imgEl);
   console.log(result);
+  $('.loader').hide();
+  $('#result').fadeIn(600);
+  $('#result').text(result[0].className + ' with ' + (result[0].probability*100).toFixed(2) + '% probability.');
 }
 
 app();
