@@ -6,6 +6,7 @@ function handleFiles(files) {
   // Load the image an show an preview
   const preview = document.getElementById('imagePreview');
 
+  // Delete the old image if necessary
   if($('#img-source').length > 0){
     console.log('Element exists!');
     child = document.getElementById('img-source');
@@ -14,6 +15,7 @@ function handleFiles(files) {
     console.log('Element does not exist!');
   }
 
+  // Add the image as an html element and load it
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     
@@ -23,7 +25,7 @@ function handleFiles(files) {
     img.classList.add("obj");
     img.id = "img-source";
     img.file = file;
-    preview.appendChild(img); // Assuming that "preview" is the div output where the content will be displayed.
+    preview.appendChild(img); 
     
     const reader = new FileReader();
     reader.onload = (function(aImg) { return function(e) { aImg.src = e.target.result; }; })(img);
@@ -36,7 +38,6 @@ function handleFiles(files) {
 
 async function predict() {
   // Make a prediction through the model on our image.
-  //const imgEl = document.getElementById('img');
   const imgEl = document.getElementById('img-source');
   
   const result = await net.classify(imgEl);
@@ -47,7 +48,6 @@ async function predict() {
 }
 
 async function app() {
-  //document.getElementById("btn-fileSelect").onclick = handleFiles;
   document.getElementById("btn-predict").onclick = predict;
 
   const fileSelect = document.getElementById("btn-fileSelect"),
@@ -61,8 +61,6 @@ async function app() {
 
   // Load the model
   console.log('Loading mobilenet..');
-
-  // Load the model.
   net = await mobilenet.load();
   console.log('Sucessfully loaded model');
 }
