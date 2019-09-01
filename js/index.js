@@ -1,7 +1,16 @@
 let net;
 
-function handleFiles(files) {
+async function handleFiles(files) {
   console.log('Handling Files..');
+  $('#btn-predict').hide();
+  $('.loader').show();
+
+  // Load the model
+  console.log('Loading mobilenet..');
+  net = await mobilenet.load();
+  console.log('Sucessfully loaded model');
+  
+  $('.loader').hide();
 
   // Load the image an show an preview
   const preview = document.getElementById('imagePreview');
@@ -48,6 +57,10 @@ async function predict() {
 }
 
 async function app() {
+  // Init
+  //$('.image-section').hide();
+  //$('.loader').hide();
+  //$('#result').hide();
   document.getElementById("btn-predict").onclick = predict;
 
   const fileSelect = document.getElementById("btn-fileSelect"),
@@ -59,10 +72,7 @@ async function app() {
     }
   }, false);
 
-  // Load the model
-  console.log('Loading mobilenet..');
-  net = await mobilenet.load();
-  console.log('Sucessfully loaded model');
+
 }
 
 app();
