@@ -12,32 +12,32 @@ async function handleFiles(files) {
   
   $('.loader').hide();
 
-  // Load the image an show an preview
-  const preview = document.getElementById('imagePreview');
-
-  // Delete the old image if necessary
-  if($('#img-source').length > 0){
-    console.log('Element exists!');
-    child = document.getElementById('img-source');
-    preview.removeChild(child);
-  } else{
-    console.log('Element does not exist!');
-  }
-
-  // Add the image as an html element and load it
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     
     if (!file.type.startsWith('image/')){ continue }
     
-    const img = document.createElement("img");
-    img.classList.add("obj");
-    img.id = "img-source";
-    img.file = file;
-    preview.appendChild(img); 
-    
     const reader = new FileReader();
-    reader.onload = (function(aImg) { return function(e) { aImg.src = e.target.result; }; })(img);
+    reader.onload = function(e) {
+      console.log("reader onload");
+      var image = new Image();
+      image.src = e.target.result;
+
+      image.onload = function (imageEvent) {
+        console.log("image onload");
+        var c = document.getElementById("myCanvas");
+        
+        const width = window.screen.availWidth / 2;
+        const scaleFactor = width / image.width;
+
+        c.width = width
+        c.height = this.height * scaleFactor;
+        var ctx = c.getContext("2d");
+        ctx.drawImage(image, 0, 0, width, this.height * scaleFactor);
+        $('.img-preview').css("width", width);
+        $('.img-preview').css("height", this.height * scaleFactor);
+      }
+    };
     reader.readAsDataURL(file);
   }
 
@@ -47,7 +47,7 @@ async function handleFiles(files) {
 
 async function predict() {
   // Make a prediction through the model on our image.
-  const imgEl = document.getElementById('img-source');
+  const imgEl = document.getElementById('myCanvas');
   
   const result = await net.classify(imgEl);
   console.log(result);
